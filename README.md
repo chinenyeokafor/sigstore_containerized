@@ -103,7 +103,7 @@
       --oidc-issuer=http://sigstore-dex:6000 \
       --fulcio-url=http://localhost:5000 \
       --rekor-url=http://localhost:3000 \
-      anythingtest24b/sigstore-thw:latest
+      sigstore-thw:latest
    ```
 
 ### Troubleshooting
