@@ -1,6 +1,6 @@
 # sigstore-containerized
 
-`sigstore-containerized` demonstrates how to build and configure a local Sigstore stack (Cosign, Rekor, Fulcio) for software artifact signing purposes. This setup is based on **Sigstore the Hard Way**, but simplified for containerized environments.
+`sigstore-containerized` demonstrates how to build and configure a local Sigstore stack  for software artifact signing purposes. This setup is based on **Sigstore the Hard Way**, but simplified for containerized environments.
 
 ### Overview
 
