@@ -81,7 +81,7 @@
 
    **Copy the Certificate Transparency Key**
 
-   Copy the Certificate Transparency (CT) public key from the Docker volume to a location that doesn't require privileged access:
+   Copy the Certificate Transparency (CT) public key from the Docker volume to a location that doesn't require privileged access. Replace `/path/to/` and run:
 
    ```bash
    cp $(docker volume inspect ctlog-data --format '{{ .Mountpoint }}')/ctfe_public.pem "/path/to/ctfe_public.pem"
@@ -99,7 +99,7 @@
 
    ```bash
    COSIGN_EXPERIMENTAL=1 \
-   go run main.go sign \
+   cosign sign \
       --oidc-issuer=http://sigstore-dex:6000 \
       --fulcio-url=http://localhost:5000 \
       --rekor-url=http://localhost:3000 \

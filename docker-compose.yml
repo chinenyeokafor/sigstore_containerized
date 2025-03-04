@@ -42,17 +42,6 @@ services:
       - sigstore-network
     restart: unless-stopped
 
-  cosign:
-    container_name: sigstore-cosign
-    build:
-      context: ./cosign
-      dockerfile: Dockerfile
-    volumes:
-      - ctlog-data:/shared-ctlog-config
-    networks:
-      - sigstore-network
-    restart: unless-stopped
-  
   fulcio:
     container_name: sigstore-fulcio
     build:

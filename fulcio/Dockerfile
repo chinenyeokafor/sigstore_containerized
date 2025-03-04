@@ -18,7 +18,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 
 
 # Install Fulcio
-RUN go install github.com/sigstore/fulcio@latest \
+RUN go install github.com/sigstore/fulcio@v1.6.6 \
     && cp ~/go/bin/fulcio /usr/local/bin/
 
 # Configure File CA setup

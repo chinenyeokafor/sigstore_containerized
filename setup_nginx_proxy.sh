@@ -33,5 +33,4 @@ sudo systemctl restart nginx
 echo "Updating /etc/hosts..."
 echo "127.0.0.1 sigstore-dex" | sudo tee -a /etc/hosts
 
-# Final message
 echo "Setup complete. Nginx should now proxy requests to sigstore-dex:6000."

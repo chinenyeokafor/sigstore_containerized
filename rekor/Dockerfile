@@ -54,5 +54,3 @@ RUN echo "#!/bin/bash" > /start_services.sh && \
 ENTRYPOINT ["/rekor_entrypoint.sh"]
 
 
-CMD []
-
