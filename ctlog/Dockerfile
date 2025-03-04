@@ -36,8 +36,8 @@ RUN mkdir -p /etc/ctfe-config && \
     openssl ec -in unenc.key -out /etc/ctfe-config/privkey.pem -des3 -passout pass:p6ssw0rd && \
     openssl ec -in /etc/ctfe-config/privkey.pem -pubout -out /etc/ctfe-config/ctfe_public.pem -passin pass:p6ssw0rd && \
     rm unenc.key && \
-    mkdir -p /shared/ctlog-config && \
-    cp /etc/ctfe-config/ctfe_public.pem  /shared/ctlog-config/
+    mkdir -p /shared-ctlog-config && \
+    cp /etc/ctfe-config/ctfe_public.pem  /shared-ctlog-config
 
 # Copy entrypoint script
 COPY start_services.sh /usr/local/bin/

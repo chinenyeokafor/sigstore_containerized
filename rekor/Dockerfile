@@ -3,7 +3,6 @@ FROM debian:11
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
-# ENV GO_VERSION=1.22.0
 
 # Install dependencies
 RUN apt-get update -y \
@@ -29,16 +28,16 @@ RUN mkdir -p ~/go/src/github.com/sigstore \
 
 
 # Install Trillian components
-RUN go install github.com/google/trillian/cmd/trillian_log_server@v1.3.14-0.20210713114448-df474653733c \
+RUN go install github.com/google/trillian/cmd/trillian_log_server@latest \
     && cp ~/go/bin/trillian_log_server /usr/local/bin/ \
-    && go install github.com/google/trillian/cmd/trillian_log_signer@v1.3.14-0.20210713114448-df474653733c \
+    && go install github.com/google/trillian/cmd/trillian_log_signer@latest \
     && cp ~/go/bin/trillian_log_signer /usr/local/bin/
 
 # Expose necessary ports
 EXPOSE 8090 8091 8190 8191 3000
 
 # Copy the entrypoint script
-COPY rekor_entrypoint.sh /rekor_entrypoint.sh
+COPY start-rekor.sh /rekor_entrypoint.sh
 RUN chmod +x /rekor_entrypoint.sh
 
 
@@ -54,6 +53,6 @@ RUN echo "#!/bin/bash" > /start_services.sh && \
 # Set the entrypoint script
 ENTRYPOINT ["/rekor_entrypoint.sh"]
 
-# Default command (empty since entrypoint handles execution)
+
 CMD []
 

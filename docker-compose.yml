@@ -5,7 +5,7 @@ services:
     container_name: sigstore-rekor
     build:
       context: ./rekor
-      dockerfile: Dockerfile-rekor
+      dockerfile: Dockerfile
     ports:
     - "3000:3000" 
     networks:
@@ -20,23 +20,15 @@ services:
     env_file:
       - ./dex/.env
     ports:
-    - "5556:5556" 
+    - "6001:6000" 
     networks:
       - sigstore-network
     restart: unless-stopped
-
-  fulcio:
-    container_name: sigstore-fulcio
-    build:
-      context: ./fulcio
-      dockerfile: Dockerfile
-    volumes:
-      - fulcio-data:/shared
-    ports:
-    - "5000:5000" 
-    networks:
-      - sigstore-network
-    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6000/.well-known/openid-configuration"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   ctlog:
     container_name: sigstore-ctlog
@@ -44,7 +36,8 @@ services:
       context: ./ctlog
       dockerfile: Dockerfile
     volumes:
-      - fulcio-data:/shared
+      - fulcio-data:/shared-fulcio-config
+      - ctlog-data:/shared-ctlog-config
     networks:
       - sigstore-network
     restart: unless-stopped
@@ -55,15 +48,37 @@ services:
       context: ./cosign
       dockerfile: Dockerfile
     volumes:
-      - ctlog-data:/shared/ctlog-config
+      - ctlog-data:/shared-ctlog-config
     networks:
       - sigstore-network
     restart: unless-stopped
+  
+  fulcio:
+    container_name: sigstore-fulcio
+    build:
+      context: ./fulcio
+      dockerfile: Dockerfile
+    volumes:
+      - fulcio-data:/shared-fulcio-config
+    ports:
+      - "5000:5000" 
+    networks:
+      - sigstore-network
+    restart: unless-stopped
+    depends_on:
+      dex:
+        condition: service_healthy
+
 
 volumes:
   fulcio-data:
+    name: fulcio-data
   ctlog-data:
+    name: ctlog-data
 
 networks:
   sigstore-network:
     driver: bridge
+    name: sigstore-network
+
+    

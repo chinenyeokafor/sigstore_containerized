@@ -39,7 +39,7 @@ cat > /etc/ctfe-config/ct.cfg <<EOF
 config {
   log_id: ${LOG_ID}
   prefix: "sigstore"
-  roots_pem_file: "/shared/fulcio-config/fulcio-root.pem"
+  roots_pem_file: "/shared-fulcio-config/fulcio-root.pem"
   private_key: {
     [type.googleapis.com/keyspb.PEMKeyFile] {
        path: "/etc/ctfe-config/privkey.pem"
