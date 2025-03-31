@@ -38,6 +38,8 @@ services:
     volumes:
       - fulcio-data:/shared-fulcio-config
       - ctlog-data:/shared-ctlog-config
+    ports:
+      - "6105:6105" 
     networks:
       - sigstore-network
     restart: unless-stopped

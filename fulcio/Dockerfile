@@ -25,7 +25,7 @@ RUN go install github.com/sigstore/fulcio@v1.6.6 \
 RUN openssl ecparam -genkey -name prime256v1 -noout -out unenc.key \
     && openssl ec -in unenc.key -out file_ca_key.pem -des3 -passout pass:p6ssw0rd \
     && openssl ec -in file_ca_key.pem -pubout -out file_ca_pub.pem -passin pass:p6ssw0rd \
-    && openssl req -new -x509 -days 365 -extensions v3_ca -key file_ca_key.pem -out fulcio-root.pem -passin pass:p6ssw0rd -subj "/C=US/ST=IN/L=City/O=Organization/OU=Unit/CN=fulcio-root" \
+    && openssl req -new -x509 -days 365 -extensions v3_ca -key file_ca_key.pem -out fulcio-root.pem -passin pass:p6ssw0rd -subj "/C=US/ST=IN/L=City/O=Organization/OU=Unit/CN=fulcio-root" -addext "keyUsage = critical,keyCertSign,cRLSign" \
     && rm unenc.key \
     && mkdir -p /shared-fulcio-config \
     && cp file_ca_key.pem file_ca_pub.pem fulcio-root.pem /shared-fulcio-config/
@@ -38,6 +38,11 @@ RUN mkdir -p /root/fulcio-config && \
       "IssuerURL": "http://sigstore-dex:6000",
       "ClientID": "sigstore",
       "Type": "email"
+    },
+    "https://token.actions.githubusercontent.com": {
+      "IssuerURL": "https://token.actions.githubusercontent.com",
+      "ClientID": "sigstore",
+      "Type": "github-workflow"
     }
   }
 }
