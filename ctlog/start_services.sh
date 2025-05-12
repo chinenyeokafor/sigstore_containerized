@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-# Start MariaDB
-# service mysql start
 # Start MariaDB in the background
 mysqld_safe > /dev/null 2>&1 &
 

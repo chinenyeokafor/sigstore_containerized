@@ -1,12 +1,12 @@
-FROM debian:11
+FROM custom_gramine_ra_image:latest
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
-RUN apt-get update -y \
-    && apt-get remove -y --purge man-db \
-    && apt-get install -y git gcc wget make
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    git gcc wget make || true
 
 # Download and install the latest version of Go
 RUN wget https://dl.google.com/go/go1.24.0.linux-amd64.tar.gz -O /tmp/go.tar.gz && \
@@ -48,10 +48,13 @@ RUN mkdir -p /root/fulcio-config && \
 }
 EOF
 
+WORKDIR /home
+
+RUN git clone https://github.com/chinenyeokafor/fulcio-Div.git
+
 
 # Expose necessary ports
 EXPOSE 5000
 
-
 # Start Fulcio CA
-CMD ["fulcio", "serve", "--config-path=/root/fulcio-config/config.json", "--ca=fileca", "--fileca-cert=/shared-fulcio-config/fulcio-root.pem", "--fileca-key=/shared-fulcio-config/file_ca_key.pem", "--fileca-key-passwd=p6ssw0rd", "--ct-log-url=http://sigstore-ctlog:6105/sigstore", "--host=0.0.0.0", "--port=5000"]
+# CMD ["fulcio", "serve", "--config-path=/root/fulcio-config/config.json", "--ca=fileca", "--fileca-cert=/shared-fulcio-config/fulcio-root.pem", "--fileca-key=/shared-fulcio-config/file_ca_key.pem", "--fileca-key-passwd=p6ssw0rd", "--ct-log-url=http://sigstore-ctlog:6105/sigstore", "--host=0.0.0.0", "--port=5000"]

@@ -46,20 +46,48 @@ services:
 
   fulcio:
     container_name: sigstore-fulcio
-    build:
-      context: ./fulcio
-      dockerfile: Dockerfile
+    image: sigstore_containerized-fulcio
     volumes:
       - fulcio-data:/shared-fulcio-config
+      - ${HOME}:/home
+      - /sys/firmware/efi:/sys/firmware/efi
     ports:
       - "5000:5000" 
     networks:
       - sigstore-network
+    user: root
+    devices:
+      - /dev/sgx_enclave
+      - /dev/sgx_provision
+    security_opt:
+      - systempaths=unconfined
+      - apparmor=unconfined
     restart: unless-stopped
     depends_on:
       dex:
         condition: service_healthy
+    stdin_open: true
+    tty: true
 
+
+  securesystemlib:
+    image: custom_gramine_ra_image
+    container_name: securesystemlib
+    user: root
+    devices:
+      - /dev/sgx_enclave
+      - /dev/sgx_provision
+    security_opt:
+      - systempaths=unconfined
+      - apparmor=unconfined
+    volumes:
+      - ${HOME}:/home
+      - /sys/firmware/efi:/sys/firmware/efi
+    networks:
+      - sigstore-network
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
 
 volumes:
   fulcio-data:
