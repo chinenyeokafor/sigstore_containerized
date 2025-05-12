@@ -12,23 +12,6 @@ services:
       - sigstore-network
     restart: unless-stopped
 
-  dex:
-    container_name: sigstore-dex
-    build:
-      context: ./dex
-      dockerfile: Dockerfile
-    env_file:
-      - ./dex/.env
-    ports:
-    - "6001:6000" 
-    networks:
-      - sigstore-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6000/.well-known/openid-configuration"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   ctlog:
     container_name: sigstore-ctlog
@@ -51,15 +34,42 @@ services:
       dockerfile: Dockerfile
     volumes:
       - fulcio-data:/shared-fulcio-config
+      - ${HOME}:/home
+      - /sys/firmware/efi:/sys/firmware/efi
     ports:
       - "5000:5000" 
     networks:
       - sigstore-network
+    user: root
+    devices:
+      - /dev/sgx_enclave
+      - /dev/sgx_provision
+    security_opt:
+      - systempaths=unconfined
+      - apparmor=unconfined
     restart: unless-stopped
-    depends_on:
-      dex:
-        condition: service_healthy
+    stdin_open: true
+    tty: true
 
+
+  securesystemlib:
+    image: custom_gramine_ra_image
+    container_name: securesystemlib
+    user: root
+    devices:
+      - /dev/sgx_enclave
+      - /dev/sgx_provision
+    security_opt:
+      - systempaths=unconfined
+      - apparmor=unconfined
+    volumes:
+      - ${HOME}:/home
+      - /sys/firmware/efi:/sys/firmware/efi
+    networks:
+      - sigstore-network
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
 
 volumes:
   fulcio-data:
@@ -71,3 +81,5 @@ networks:
   sigstore-network:
     driver: bridge
     name: sigstore-network
+
+    
